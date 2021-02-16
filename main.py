@@ -65,9 +65,10 @@ def create_Employee(emp : createEmployee, db : Session = Depends(get_db)):
     db.add(_employee)
     db.commit()
     # Background_tasks.add_task(fetch_emp_data,employee.id)
+    
     return{
         "code":"Success",
-        "messege": "Created"
+        "messege": "Employee created the name"+emp.name
     }
 @app.get("/Employees_by_id" ) 
 def employee_by_id(id : int) :
@@ -75,24 +76,14 @@ def employee_by_id(id : int) :
     emp = db.query(Employee).filter(Employee.id == id).first()
     return emp
 
+@app.get("/Employees_by_name")
+def employees_by_name(name : str) :
+    db = SessionLocal()
+    return db.query(Employee).filter(Employee.name == name).first()
+
 @app.get("/All_Employees", response_model = List[ createEmployee ])
 def all_employee(skip: int = 0, limit: int = 100,db : Session =  Depends(get_db)):
-    # db = SessionLocal()
-    # emp = db.query(Employee).all()
     return db.query(Employee).offset(skip).limit(limit).all()
-
-
-
-# @app.get("/users/", response_model=List[schemas.User])
-# def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-#     users = crud.get_users(db, skip=skip, limit=limit)
-#     return users
-
-@app.get("/Employees_by_name")
-def employee_by_name(name : str) :
-    db = SessionLocal()
-    emp = db.query(Employee).filter(Employee.name == name).first()
-    return emp
 
 # #APIS BUnits
 # 1. Create_BUnit
@@ -110,6 +101,13 @@ def create_BUnits(create_bunit: bUnit, db:Session = Depends(get_db)) :
         "code":"Success",
         "messege": "New Bunit added"
     }
+@app.get("Buisness_units_by_id")
+def bunits_by_id(id : int) :
+    db = SessionLocal()
+    emp = db.query(BUnits).filter(BUnits.id == id).first()
+    return emp
+
+
 
 # #APis Goals
 # 1.Goals_by_id
